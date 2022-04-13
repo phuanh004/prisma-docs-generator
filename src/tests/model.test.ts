@@ -132,57 +132,5 @@ describe('model generator', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders model operation html correctly', async () => {
-    const datamodelString = /* Prisma */ `
-      model User {
-        id String @default(cuid()) @id
-        name String
-        otherField Int
-        posts Post[]
-      }
-
-      model Post {
-        id String @id @default(cuid())
-        title String?
-        userId String
-        user User @relation(fields:[userId], references:[id])
-      }
-    `;
-
-    const dmmf = await getDMMF({ datamodel: datamodelString });
-    const transformedDmmf = transformDMMF(dmmf);
-
-    const modelGen = new ModelGenerator(transformedDmmf);
-    const spy = jest.spyOn(modelGen, 'getModelOperationMarkup');
-    modelGen.toHTML();
-
-    expect(spy).toHaveBeenCalled();
-
-    expect(
-      modelGen.getModelOperationMarkup(
-        {
-          name: 'findOne',
-          description: 'Find zero or one user',
-          usage: 'Example usage',
-          opKeys: [
-            {
-              name: 'where',
-              required: false,
-              types: [
-                {
-                  type: 'UserWhereInput',
-                  isList: false,
-                  location: 'inputObjectTypes',
-                },
-              ],
-            },
-          ],
-          output: { type: 'User', required: true, list: false },
-        },
-        'User'
-      )
-    ).toMatchSnapshot();
-  });
-
   // TODO: add more tests for operations transform
 });

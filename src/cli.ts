@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import meow from 'meow';
+import type { AnyFlags, Result } from 'meow';
 import kleur from 'kleur';
 import express from 'express';
 import { getSchemaPath, getGenerators } from '@prisma/sdk';
@@ -19,6 +20,7 @@ const cli = meow(
     
 `,
   {
+    importMeta: import.meta,
     flags: {
       port: {
         type: 'number',
@@ -61,7 +63,7 @@ class ExpressService {
   }
 }
 
-async function execute<T extends meow.AnyFlags>(cli: meow.Result<T>) {
+async function execute<T extends AnyFlags>(cli: Result<T>) {
   const {
     flags: { port },
     input,
